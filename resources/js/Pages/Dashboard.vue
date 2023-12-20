@@ -282,7 +282,7 @@ export default {
             if (this.parameters.splitBy === 'category') {
                 var groupedData = this.records.reduce((result, item) => {
                     const group = item[this.parameters.categoryColumn]
-                    records[group] = records[group] || [];
+                    result[group] = result[group] || [];
                     result[group].push(item[this.parameters.valueToPlot]);
                     return result
                 }, {})
