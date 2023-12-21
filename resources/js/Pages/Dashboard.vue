@@ -227,7 +227,7 @@ export default {
                 db_name: 'd03f00ee',
                 db_username: 'd03f00ee',
                 db_password: 'QvCX34R8tqVEBm77Zmdu',
-                db_query: 'SELECT * FROM `d03f00ee`.`Daily_Account_Balance` LIMIT 10;',
+                db_query: 'SELECT * FROM `d03f00ee`.`AC_Thermometer_Log` LIMIT 30;',
             },
             parameters: {
                 splitBy: 'column',
@@ -263,6 +263,9 @@ export default {
             this.showParameters = true
         },
         setGraph() {
+            this.showGraph = false
+            this.chart = {}
+
             let data = [];
             const mainAxisValues = new Set()
 
@@ -281,11 +284,14 @@ export default {
             // Handles the plot by Category
             if (this.parameters.splitBy === 'category') {
                 var groupedData = this.records.reduce((result, item) => {
-                    const group = item[this.parameters.categoryColumn]
-                    result[group] = result[group] || [];
-                    result[group].push(item[this.parameters.valueToPlot]);
-                    return result
-                }, {})
+                    const group = item[this.parameters.categoryColumn];
+                    const mainAxisIndex = this.chart.labels.indexOf(item[this.parameters.mainAxis]);
+
+                    result[group] = result[group] || Array(this.chart.labels.length).fill(undefined);
+                    result[group][mainAxisIndex] = item[this.parameters.valueToPlot];
+
+                    return result;
+                }, {});
             }
 
             // Handles the plot by Column
@@ -306,7 +312,7 @@ export default {
                 const obj = {
                     label: ele,
                     data: groupedData[ele],
-                    backgroundColor: this.colors[index]
+                    backgroundColor: this.colors[index] || 'black'
                 }
                 dataSet.push(obj)
             })
